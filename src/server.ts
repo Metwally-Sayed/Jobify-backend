@@ -1,27 +1,48 @@
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import fileUpload from "express-fileupload";
-import extractCVRoute from "./routes/cv";
-import jobRoutes from "./routes/jobs";
+import { config } from "../config";
+import routes from "./routes";
 
 dotenv.config();
+
 const app = express();
 
-app.use(cors());
-// Enable file upload middleware
+// Middlewares
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: config.clientOrigin,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 app.use(
   fileUpload({
-    useTempFiles: true, // Store files temporarily to avoid in-memory issues
-    tempFileDir: "/tmp/", // Path for temporary file storage
-    limits: { fileSize: 5 * 1024 * 1024 }, // Set max file size to 5MB
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+    limits: { fileSize: config.fileUploadLimits },
     abortOnLimit: true,
   })
 );
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/extract-text", extractCVRoute);
-app.use("/api/jobs", jobRoutes);
+// Routes
+app.use("/api", routes);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Start server
+const server = app.listen(config.port, () =>
+  console.log(`Server running on port ${config.port}`)
+);
+
+// Graceful shutdown
+process.on("SIGINT", () => {
+  console.log("Shutting down server...");
+  server.close(() => {
+    console.log("Server closed");
+    process.exit(0);
+  });
+});

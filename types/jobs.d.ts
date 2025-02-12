@@ -1,4 +1,4 @@
-export type Jobs = {
+export type Job = {
   title?: string | null;
   company?: string | null;
   location?: string | null;
