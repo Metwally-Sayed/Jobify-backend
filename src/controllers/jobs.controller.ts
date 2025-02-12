@@ -1,13 +1,13 @@
-import express from "express";
+import { Request, Response } from "express";
+import { Job } from "../../types/jobs";
 import { scrapeJobs } from "../scraper/jobScraper";
-const router = express.Router();
 
-router.get("/scrape", async (req, res) => {
+export const getJobs = async (req: Request, res: Response): Promise<void> => {
   try {
     // const jobs = SITESJOBS.map(async (site) => {
     //   await scrapeJobs(site.url as string, site.filter as string);
     // });
-    const jobs = await scrapeJobs();
+    const jobs: Job[] = await scrapeJobs();
     console.log("Loading.... ⌛");
     console.log("jobs from API:", jobs);
 
@@ -15,6 +15,4 @@ router.get("/scrape", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Failed to scrape jobs... ❌" });
   }
-});
-
-export default router;
+};
