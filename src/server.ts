@@ -14,16 +14,16 @@ const app = express();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: config.clientOrigin,
+    origin: "http://localhost:3000",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
 app.use(
   fileUpload({
-    useTempFiles: true,
+    useTempFiles: true, // ⚡ Ensures large files are handled properly
     tempFileDir: "/tmp/",
-    limits: { fileSize: config.fileUploadLimits },
+    limits: { fileSize: 1 * 1024 * 1024 }, // 1MB limit (Ensure `config.fileUploadLimits` is correctly set!)
     abortOnLimit: true,
   })
 );
@@ -35,14 +35,14 @@ app.use("/api", routes);
 
 // Start server
 const server = app.listen(config.port, () =>
-  console.log(`Server running on port ${config.port}`)
+  console.log(`🚀 Server running on port ${config.port}`)
 );
 
 // Graceful shutdown
 process.on("SIGINT", () => {
-  console.log("Shutting down server...");
+  console.log("🛑 Shutting down server...");
   server.close(() => {
-    console.log("Server closed");
+    console.log("✅ Server closed");
     process.exit(0);
   });
 });

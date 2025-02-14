@@ -17,6 +17,6 @@ const limiter = rateLimit({
   headers: true,
 });
 
-router.post("/extract-text", limiter, cvExtractText);
+router.post("/extract-text", cvExtractText);
 
 export default router;

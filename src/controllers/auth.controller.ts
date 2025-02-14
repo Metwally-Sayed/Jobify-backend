@@ -48,7 +48,7 @@ export const login = async (req: Request, res: Response) => {
     sameSite: "strict",
   });
 
-  res.json({ accessToken });
+  res.json({ accessToken, user: { name: user!.name, email: user!.email } });
 };
 
 export const refreshToken = (req: Request, res: Response) => {

@@ -4,6 +4,7 @@ export interface User {
   email: string;
   password: string;
   refreshToken?: string;
+  cv?: File;
 }
 
 // Simulating a database
